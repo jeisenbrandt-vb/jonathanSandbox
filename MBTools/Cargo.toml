@@ -1,0 +1,9 @@
+[package]
+name = "MBTools"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rprompt = "2.1.1"
+rsautogui = "0.2.2"
+time = "0.3.36"

@@ -1,0 +1,10 @@
+C:\repos\scripts\MBTools\target\debug\deps\librsautogui-29e1bacba75fa6e4.rmeta: C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\lib.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\keyboard\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\mouse\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\screen\mod.rs
+
+C:\repos\scripts\MBTools\target\debug\deps\librsautogui-29e1bacba75fa6e4.rlib: C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\lib.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\keyboard\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\mouse\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\screen\mod.rs
+
+C:\repos\scripts\MBTools\target\debug\deps\rsautogui-29e1bacba75fa6e4.d: C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\lib.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\keyboard\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\mouse\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\screen\mod.rs
+
+C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\lib.rs:
+C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\keyboard\mod.rs:
+C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\mouse\mod.rs:
+C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\screen\mod.rs:

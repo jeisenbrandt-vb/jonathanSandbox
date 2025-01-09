@@ -1,0 +1,1 @@
+C:\repos\scripts\VoBo_Tools_Jonathan\target\debug\VoBo_Tools_Jonathan.exe: C:\repos\scripts\VoBo_Tools_Jonathan\src\conduit.rs C:\repos\scripts\VoBo_Tools_Jonathan\src\main.rs C:\repos\scripts\VoBo_Tools_Jonathan\src\modbus.rs C:\repos\scripts\VoBo_Tools_Jonathan\src\serial.rs

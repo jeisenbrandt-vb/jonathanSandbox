@@ -1,0 +1,4 @@
+C:/repos/scripts/autoSerialTester/build/CMakeFiles/serial_port.dir
+C:/repos/scripts/autoSerialTester/build/CMakeFiles/serial_port_demo.dir
+C:/repos/scripts/autoSerialTester/build/CMakeFiles/ALL_BUILD.dir
+C:/repos/scripts/autoSerialTester/build/CMakeFiles/ZERO_CHECK.dir

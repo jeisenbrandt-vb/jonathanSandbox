@@ -1,0 +1,10 @@
+C:\repos\scripts\VoBo_Tools_Jonathan\target\debug\deps\librsautogui-4fab6a7fdb1143b1.rmeta: C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\lib.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\keyboard\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\mouse\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\screen\mod.rs
+
+C:\repos\scripts\VoBo_Tools_Jonathan\target\debug\deps\librsautogui-4fab6a7fdb1143b1.rlib: C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\lib.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\keyboard\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\mouse\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\screen\mod.rs
+
+C:\repos\scripts\VoBo_Tools_Jonathan\target\debug\deps\rsautogui-4fab6a7fdb1143b1.d: C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\lib.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\keyboard\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\mouse\mod.rs C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\screen\mod.rs
+
+C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\lib.rs:
+C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\keyboard\mod.rs:
+C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\mouse\mod.rs:
+C:\Users\JonathanEisenbrandt\.cargo\registry\src\index.crates.io-6f17d22bba15001f\rsautogui-0.2.2\src\screen\mod.rs:

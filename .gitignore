@@ -1,0 +1,86 @@
+# Ignore build directories and compiled files
+/build/
+/bin/
+/target/
+/out/
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.exe
+*.so
+*.dylib
+*.pdb
+*.idb
+*.ilk
+
+# C++ specific
+*.pro.user
+*.qmake.stash
+
+# Rust specific
+*.rlib
+*.cargo/
+
+logs/
+venv/
+
+# C# specific
+# Ignore Visual Studio and Rider files
+.vscode/
+.idea/
+.vs/
+.vs2019/
+.vsconfig/
+# Ignore .NET build files
+project.lock.json
+project.fragment.lock.json
+bin/
+obj/
+
+# Python specific
+# Ignore Python bytecode and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env/
+.venv/
+env/
+venv/
+
+# JavaScript specific
+# Ignore Node.js modules and lock files (optional)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Arduino specific
+# Ignore Arduino build files
+/build/
+
+# IDE specific
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.swp
+*~
+*.bak
+*.tmp
+*.log
+
+# .env files (for sensitive environment variables)
+.env
+.env.local
+.env.*.local

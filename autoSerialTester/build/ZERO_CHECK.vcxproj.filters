@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\repos\scripts\autoSerialTester\build\CMakeFiles\a5d0e394d59e8b67ed34f1d8762a5b02\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{1BEC7A74-AD04-3278-B0A5-44149F50EB59}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
