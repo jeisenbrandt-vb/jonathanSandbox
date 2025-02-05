@@ -37,49 +37,14 @@ def mqttOnPublish(client, userdata, result):
 
 def mqttOnMessage(client, userdata, msg):
     #store packet
-    data_to_insert = {}
+    decoded_payload = msg.payload.decode('utf-8')
+    msg_dict = json.loads(decoded_payload)
     if "up" in msg.topic: # or "packet_recv" in msg.topic:
         print("packet uplink")
-        decoded_payload = msg.payload.decode('utf-8')
-        msg_dict = json.loads(decoded_payload)
         insert_row(dbtable, msg_dict)
-        data_to_insert = (
-            msg_dict["jver"],
-            msg_dict["tmst"],
-            msg_dict["chan"],
-            msg_dict["rfch"],
-            msg_dict["freq"],
-            msg_dict["mid"],
-            msg_dict["stat"],
-            msg_dict["modu"],
-            msg_dict["datr"],
-            msg_dict["codr"],
-            msg_dict["rssis"],
-            msg_dict["lsnr"],
-            msg_dict["foff"],
-            msg_dict["rssi"],
-            msg_dict["opts"],
-            msg_dict["size"],
-            msg_dict["fcnt"],
-            msg_dict["cls"],
-            msg_dict["port"],
-            msg_dict["mhdr"],
-            msg_dict["data"],
-            msg_dict["appeui"],
-            msg_dict["deveui"],
-            msg_dict["devaddr"],
-            msg_dict["ack"],
-            msg_dict["adr"],
-            msg_dict["gweui"],
-            msg_dict["seqn"],
-            msg_dict["time"],
-            "UpUnc"
-        )
     elif "packet_recv" in msg.topic:
-        #implement later
         print("packet recieved")
-    # if data_to_insert != {}:
-    #     insert_data( data_to_insert)
+        print(msg_dict)
 
 def mqttLoopThread():
     while True:
@@ -209,7 +174,18 @@ def countdown_timer(total_seconds):
         time.sleep(1)
         total_seconds -= 1
     
-    print("\rComplete             ")
+    print("\rComplete\t\t\t\t\t")
+
+def downlink_test():
+    # for dl in dls_test:
+    count = 0
+    for dl in dls:
+        mqttPublish(deveui, dl)
+        count += 1
+        if count%10 == 0:
+            print(f"sent {count} downlinks")
+            countdown_timer(600)
+
 
 dls_test = [
 {"AinPayloadType": 0},
@@ -251,23 +227,10 @@ def main():
     #will have to do this for each gateway
     mqttConnect("10.1.10.31")
     # requestConfigResponsePayloads(voboType, deveui)
-    count = 0
     time.sleep(1) #give the gateway a second to connect
-    # for dl in dls_test:
-    # for dl in dls:
-    #     mqttPublish(deveui, dl)
-    #     count += 1
-    #     if count%10 == 0:
-    #         print(f"sent {count} downlinks")
-    #         countdown_timer(600)
     #need to keep the main thread running so that the app doesn't stop
     while True:
         time.sleep(5)
-
-    if cur:
-        cur.close()
-    if conn:
-        conn.close()
 
 if __name__ == "__main__":
     main()
