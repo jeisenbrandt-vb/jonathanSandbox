@@ -1,23 +1,19 @@
-import asyncio
-import asyncpg
 import paho.mqtt.client as mqtt
 import threading
 import json
 import base64
 import time
 import psycopg2
-from psycopg2.extras import execute_values
-import pytz
 from datetime import datetime
 from downlink_troubleshooting import dls
 from psycopg2 import sql
 
-dbname="loranethubdb"
-dbtable="packets"
-user="postgres"
-password="volleyboast"
-host="localhost"
-port="5432"
+dbname_g="loranethubdb"
+dbtable_g="packets"
+user_g="postgres"
+password_g="volleyboast"
+host_g="localhost"
+port_g="5432"
 
 mqttClient = mqtt.Client()
 
@@ -37,12 +33,14 @@ def mqttOnPublish(client, userdata, result):
 
 def mqttOnMessage(client, userdata, msg):
     #store packet
-    decoded_payload = msg.payload.decode('utf-8')
-    msg_dict = json.loads(decoded_payload)
     if "up" in msg.topic: # or "packet_recv" in msg.topic:
         print("packet uplink")
-        insert_row(dbtable, msg_dict)
+        decoded_payload = msg.payload.decode('utf-8')
+        msg_dict = json.loads(decoded_payload)
+        insert_row(dbname_g, dbtable_g, msg_dict)
     elif "packet_recv" in msg.topic:
+        decoded_payload = msg.payload.decode('utf-8')
+        msg_dict = json.loads(decoded_payload)
         print("packet recieved")
         print(msg_dict)
 
@@ -124,15 +122,15 @@ def requestConfigResponsePayloads(voboType, deveui):
             if groupNum % 10 == 0:
                 time.sleep(180)
 
-def insert_row(table, data):
+def insert_row(dbname, table, data):
     # Connect to PostgreSQL database
     try:
         connection = psycopg2.connect(
             dbname=dbname, 
-            user=user, 
-            password=password, 
-            host=host, 
-            port=port
+            user=user_g, 
+            password=password_g, 
+            host=host_g, 
+            port=port_g
         )
         cursor = connection.cursor()
 
@@ -185,43 +183,6 @@ def downlink_test():
         if count%10 == 0:
             print(f"sent {count} downlinks")
             countdown_timer(600)
-
-
-dls_test = [
-{"AinPayloadType": 0},
-{"Ain1Type": 1},
-{"Ain2Type": 1},
-{"Ain3Type": 0},
-{"Ain3Type": 0},
-{"Ain1MinValue": -630798.7},
-{"Ain1MinValue": -630798.7},
-{"Ain2MinValue": -177782.2},
-{"Ain2MinValue": -177782.2},
-{"Ain3MinValue": 455920.0},
-{"Ain3MinValue": 455920.0},
-{"Ain1MaxValue": -899789.0},
-{"Ain1MaxValue": -899789.0},
-{"Ain2MaxValue": -801554.4},
-{"Ain2MaxValue": -801554.4},
-{"Ain3MaxValue": 91415.7},
-{"Ain3MaxValue": 91415.7},
-{"Ain1SeriesResistance": 106937.5},
-{"Ain1SeriesResistance": 106937.5},
-{"Ain2SeriesResistance": 632140.5},
-{"Ain2SeriesResistance": 632140.5},
-{"Ain3SeriesResistance": 78496.7},
-{"Ain3SeriesResistance": 78496.7},
-{"Ain1UnitsCode": 111},
-{"Ain1UnitsCode": 111},
-{"Ain2UnitsCode": 88},
-{"Ain2UnitsCode": 88},
-{"Ain3UnitsCode": 221},
-{"Ain3UnitsCode": 221},
-{"Ain1Gain": -956300.3},
-{"Ain1Gain": -956300.3},
-{"Ain2Gain": -263790.2},
-{"Ain2Gain": -263790.2}
-]
 
 def main():
     #will have to do this for each gateway
