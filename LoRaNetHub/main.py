@@ -5,7 +5,7 @@ import base64
 import time
 import psycopg2
 from datetime import datetime
-from downlink_troubleshooting import dls
+from downlink_troubleshooting import dls, dls_ain
 from psycopg2 import sql
 
 dbname_g="loranethubdb"
@@ -64,7 +64,7 @@ def mqttPublish(deveui, downlinkPayload):
     topic = f"lora/{deveui}/down"
     curr_time = current_time = datetime.now().strftime("%H:%M:%S")
     downlinkPayloadStr = json.dumps(downlinkPayload)
-    print(f"Downlink Payload: {downlinkPayloadStr} sent to {deveui} at {curr_time}")
+    print(f"Downlink Payload: {downlinkPayloadStr}\tsent to {deveui} at {curr_time}")
     downlinkPayloadBase64Encoded = base64.b64encode(downlinkPayloadStr.encode()).decode()
     message = "{\"data\":\"" + downlinkPayloadBase64Encoded + "\",\"port\":10}"
 
@@ -91,7 +91,7 @@ def requestConfigResponsePayloads(voboType, deveui):
         # Request all modbus groups configs
         for groupNum in range(1, 42):
             voboXXModbusGroupPayloadRequest = {
-                "RequestConfig": "VoBoXX-Modbus-Group{}".format(groupNum)
+                    "RequestConfig": "VoBoXX-Modbus-Group{}".format(groupNum)
             }
             mqttPublish(deveui, voboXXModbusGroupPayloadRequest)
             if groupNum % 10 == 0:
@@ -162,11 +162,7 @@ def countdown_timer(total_seconds):
         hours = total_seconds // 3600
         minutes = (total_seconds % 3600) // 60
         seconds = total_seconds % 60
-        
-        # Format the time as HH:MM:SS
         time_left = f"{hours:02}:{minutes:02}:{seconds:02}"
-        
-        # Print the countdown on the same line
         print(f"\rTime remaining: {time_left}", end='', flush=True)
         
         time.sleep(1)
@@ -174,24 +170,55 @@ def countdown_timer(total_seconds):
     
     print("\rComplete\t\t\t\t\t")
 
+dl_test = [
+    {"Ain2Gain": -263790.2},
+]
+
+dls_full = dls + dls_ain
+
 def downlink_test():
-    # for dl in dls_test:
+    #0: full test
+    #1: ain dls
+    #2: non ain dls
+    #3: spam one dl
+    #4: request config
+    test = 4
     count = 0
-    for dl in dls:
-        mqttPublish(deveui, dl)
-        count += 1
-        if count%10 == 0:
-            print(f"sent {count} downlinks")
-            countdown_timer(600)
+    match(test):
+        case 0:
+            for dl in dls_full:
+                mqttPublish(deveui, dl)
+                count += 1
+                if count%10 == 0:
+                    print(f"sent {count} downlinks")
+                    countdown_timer(60)
+        case 1:
+            for dl in dls_ain:
+                mqttPublish(deveui, dl)
+                count += 1
+                countdown_timer(600)
+        case 2:
+            for dl in dls:
+                mqttPublish(deveui, dl)
+                count += 1
+                if count%10 == 0:
+                    print(f"sent {count} downlinks")
+                    countdown_timer(60)
+        case 3:
+            while True:
+                mqttPublish(deveui, dl_test[0])
+        case 4:
+            mqttPublish(deveui, {"RequestConfig": "Basic-All"})
 
 def main():
     #will have to do this for each gateway
     mqttConnect("10.1.10.31")
     # requestConfigResponsePayloads(voboType, deveui)
     time.sleep(1) #give the gateway a second to connect
+    downlink_test()
     #need to keep the main thread running so that the app doesn't stop
-    while True:
-        time.sleep(5)
+    # while True:
+    #     time.sleep(5)
 
 if __name__ == "__main__":
     main()

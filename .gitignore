@@ -15,6 +15,10 @@
 *.idb
 *.ilk
 
+# temp files
+*.txt
+*.log
+
 # C++ specific
 *.pro.user
 *.qmake.stash

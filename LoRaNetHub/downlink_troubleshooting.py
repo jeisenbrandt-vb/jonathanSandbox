@@ -823,5 +823,57 @@ dls = [
 # {"Ain1Gain": -956300.3},
 # {"Ain1Gain": -956300.3},
 # {"Ain2Gain": -263790.2},
-# {"Ain2Gain": -263790.2}
+# {"Ain2Gain": -263790.2},
+]
+
+dls_ain = [
+    {"TxAin1": 6},
+    {"TxAin1": 6},
+    {"TxAin2": 9},
+    {"TxAin2": 9},
+    {"TxAin3": 15},
+    {"TxAin3": 15},
+    {"AinPayloadType": 0},
+    {"Ain1Type": 1},
+    {"Ain2Type": 1},
+    {"Ain3Type": 0}, #not sure if this in spec
+    {"Ain3Type": 0},
+    {"Ain1MinValue": -630798.7},
+    {"Ain1MinValue": -630798.7},
+    {"Ain2MinValue": -177782.2},
+    {"Ain2MinValue": -177782.2},
+    {"Ain3MinValue": 455920.0},
+    {"Ain3MinValue": 455920.0},
+    {"Ain1MaxValue": -899789.0},
+    {"Ain1MaxValue": -899789.0},
+    {"Ain2MaxValue": -801554.4},
+    {"Ain2MaxValue": -801554.4},
+    {"Ain3MaxValue": 91415.7},
+    {"Ain3MaxValue": 91415.7},
+    {"Ain1SeriesResistance": 106937.5},
+    {"Ain1SeriesResistance": 106937.5},
+    {"Ain2SeriesResistance": 632140.5},
+    {"Ain2SeriesResistance": 632140.5},
+    {"Ain3SeriesResistance": 78496.7},
+    {"Ain3SeriesResistance": 78496.7},
+    {"Ain1UnitsCode": 111},
+    {"Ain1UnitsCode": 111},
+    {"Ain2UnitsCode": 88},
+    {"Ain2UnitsCode": 88},
+    {"Ain3UnitsCode": 221},
+    {"Ain3UnitsCode": 221},
+    {"Ain1Gain": -956300.3},
+    {"Ain1Gain": -956300.3},
+    {"Ain2Gain": -263790.2},
+    {"Ain2Gain": -263790.2},
+]
+
+dl_last_batch_2 = [
+    {"TxVoltVIN": 12},
+    {"TxVoltVIN": 12},
+    {"TxVolt3V3": 11},
+    {"TxVoltVPP": 15},
+    {"TxContMeasPeriod": 0},
+    {"TxContMeasCnt": 1},
+    
 ]
