@@ -18,6 +18,7 @@
 # temp files
 *.txt
 *.log
+python_scripts/tmp/
 
 # C++ specific
 *.pro.user
