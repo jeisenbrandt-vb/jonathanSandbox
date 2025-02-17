@@ -1,18 +1,26 @@
 import serial
 import time
 import logging
+from datetime import datetime
+import os
 
 global log
 log_running = True
+log_directory = r"C:/Users/JonathanEisenbrandt/Desktop/Logs"
+os.makedirs(log_directory, exist_ok=True)
+current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+log_filename = os.path.join(log_directory, f"serial_log_{current_time}.log")
 
-logging.basicConfig(filename="serial_log.log", level=logging.INFO, 
-                    format="[%(asctime)s.%(msecs)03d] - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+logging.basicConfig(filename=log_filename, level=logging.INFO, 
+                    format="[%(asctime)s.%(msecs)03d] - %(message)s", 
+                    datefmt="%Y-%m-%d %H:%M:%S")
 
 def read_serial_data(port, baudrate):
     try:
         # Open the serial port
         ser = serial.Serial(port, baudrate, timeout=1)
         print(f"Connected to {port} at {baudrate} baudrate")
+        print(f"Log file: {log_filename}")
 
         while log_running:
             # Read a line from the serial port
@@ -21,7 +29,7 @@ def read_serial_data(port, baudrate):
                 if line:
                     # Log the received data with a timestamp
                     logging.info(line)
-                    print(f"Received: {line}")
+                    # print(f"Received: {line}")
     except serial.SerialException as e:
         print(f"Error opening the serial port: {e}")
     except KeyboardInterrupt:
@@ -70,4 +78,4 @@ def run_serial_log(port_num=None):
 
 
 if __name__ == "__main__":
-    run()
+    run_serial_log()
