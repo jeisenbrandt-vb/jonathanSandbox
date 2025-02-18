@@ -45,10 +45,19 @@ def compare_json(json1, json2, path=""):
     return sorted(differences, key= lambda x: x[0])
 
 # Load the JSON files into Python objects
-with open("tmp\\config1_02-12-2025_14-03-48.json", "r") as file1:
+file_num = 0
+sent_json = [
+    "C:\\Users\\JonathanEisenbrandt\\Downloads\\VoBoXP-downlinks-test\\VoBoXP-downlinks-test\\config1_02-18-2025_03-50-21.json",
+    "tmp\\config1_02-12-2025_14-03-48.json",
+]
+received_json = [
+    "C:\\Users\\JonathanEisenbrandt\\Downloads\\VoBoXP-downlinks-test\\VoBoXP-downlinks-test\\received_config_02-18-2025_10-05-21.json",
+    "tmp\\received_config_02-12-2025_20-18-50.json",
+]
+with open(sent_json[file_num], "r") as file1:
     json_data1 = json.load(file1)
 
-with open("tmp\\received_config_02-12-2025_20-18-50.json", "r") as file2:
+with open(received_json[file_num], "r") as file2:
     json_data2 = json.load(file2)
 
 # Compare the JSON objects and print the differences
