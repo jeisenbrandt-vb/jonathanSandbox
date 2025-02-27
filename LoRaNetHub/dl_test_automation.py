@@ -1,24 +1,128 @@
 import threading
+from datetime import datetime
+import glob
+import serial
+import shutil
+import queue
 import time
 import serial_communication
 import sys
 import os
+import argparse
 sys.path.append(os.path.abspath('C:/repos/VoBoConfigTool'))
 import testDownlinks
+import VoBoFileTransfer
+from dotenv import load_dotenv
+
+def vobo_configurator(config_num, port_num):
+    # Preconfiguration:
+    # cycleTime: 60, cycleSubbands: disabled, FSB: <current gateway FSB>, modbusMultiSlaveAdminEnable: True, VoBoSyncAdminEnable: True,
+    config_root = "C:\\repos\\jonathanSandbox\\LoRaNetHub\\VoBoConfigs\\"
+    config_paths = [
+        config_root + "XP_1_00_00_defaults.csv",
+        config_root + "XP_1_00_00_DL_testing_base.csv",
+        config_root + "XP_1_00_00_DL_testing_custom_1.csv", #fsb6, class A
+        config_root + "XP_1_00_00_DL_testing_custom_2.csv", #fsb6
+    ]
+    # py VoBoFileTransfer.py -d VoBo-To-PC -f VoBo-Config-File.csv -p COM9
+    sys.argv = ['VoBoFileTransfer.py', '-d', 'PC-To-VoBo', '-f', config_paths[config_num], '-p', f'COM{port_num}']
+    VoBoFileTransfer.main()
+    exit_serial_menu(port_num)
+
+def exit_serial_menu(port_num):
+    print("Attempting to exit serial menu")
+    load_dotenv()
+    input_stream = os.getenv('INPUT_STREAM')
+    input_array = input_stream.split(',')
+    ser = serial.Serial(f'COM{port_num}', 9600, timeout=60)  # Replace 'COMx' with your port, 9600 is a common baud rate
+    time.sleep(2)
+
+    for choice in input_array:
+        ser.write(choice.encode())  # Send the choice
+        ser.write(b'\r')  # Send the Enter key (Carriage Return)
+        time.sleep(2)
+    for i in range(2):
+        ser.write(bytes([27]))  # Send the Escape key (Escape = 27 in ASCII)
+        time.sleep(2)
+    ser.close()
+
+def get_last_modified_file(directory, extension):
+    files = glob.glob(os.path.join(directory, f'*.{extension}'))
+
+    if not files:
+        print(f"no files of type {extension} found in {directory}")
+        return None  # No files found with the given extension
+    last_modified_file = max(files, key=os.path.getmtime)
+    
+    return last_modified_file
+
+def create_archive(test_result, test_start_time, serial_log_file, console_log_file,):
+    print("Creating archive")
+    sent_config = get_last_modified_file("C:\\repos\\VoBoConfigTool\\tests\\randomConfigFiles", 'json')
+    recieved_config = get_last_modified_file("C:\\repos\\VoBoConfigTool\\tests\\downlinks\\receivedConfigFiles", 'json')
+    log_files = [serial_log_file, console_log_file] + [var for var in [sent_config, recieved_config] if not test_result]
+    print("Log file", log_files[0])
+    archive_directory = f"C:\\repos\\jonathanSandbox\\LoRaNetHub\\DL_test_archives"
+    current_archive_directory = archive_directory + f"\\DL_test_{test_start_time}"
+    os.makedirs(current_archive_directory, exist_ok=True)
+    for file in log_files:
+        shutil.copy(file, current_archive_directory)
+    shutil.make_archive(current_archive_directory, 'zip', archive_directory + f"\\DL_test_{test_start_time}")
+    shutil.rmtree(current_archive_directory)
 
 if __name__ == "__main__":
-    log_thread = threading.Thread(target=serial_communication.run_serial_log, args=(9,))
+    test_start_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    parser = argparse.ArgumentParser(description='DL tester automation')
+    
+    parser.add_argument('--testNum', required=True, type=str, help='Test sequence to execute')
+    parser.add_argument('--configNum', default='0', type=str, help='Config to flash to vobo')
+    parser.add_argument('--portNum', required=True, type=str, help='Serial port that vobo is connected to')
+    parser.add_argument('--skipConfig', default='false', type=str, help='Skip configuration step')
+
+    args = parser.parse_args()
+
+    test_num = int(args.testNum)
+    config_num = int(args.configNum)
+    port_num = int(args.portNum)
+    skip_config = args.skipConfig.lower() in ['true', '1', 't', 'y', 'yes']
+    test_configs = [
+        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', '00-80-00-00-00-02-25-31', '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True'],
+        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.31', '-d', '00-80-00-00-00-01-78-96', '-t', 'VoBoXX', '-v', '2.01.00', '-s', '1', '-r', 'Downlinks', '-m', 'True'] #XX
+    ]
+    try:
+        if skip_config:
+            print("Skipping configuration step")
+        else:
+            vobo_configurator(config_num, port_num)
+    except:
+        print("error changing config")
+    print("Starting main portion of test")
+    log_results = queue.Queue()
+    log_thread = threading.Thread(target=serial_communication.run_serial_log, args=(log_results, port_num,))
+    # log_thread = threading.Thread(target=serial_communication.run_serial_log, args=(test_configs[test_num][0],))
     log_thread.start()
+    os.makedirs('C:\\repos\\jonathanSandbox\\LoRaNetHub\\consoleLogs', exist_ok=True)
+    console_log_file = f'C:\\repos\\jonathanSandbox\\LoRaNetHub\\consoleLogs\\consoleLogs{test_start_time}.txt'
+    test_result = False
     try:
         time.sleep(60)
         # python testDownlinks.py -n 1 -b 10.1.10.31 -d 00-80-00-00-00-01-71-31 -t VoBoXX -v 2.00.00 -s 1 -r Downlinks -m False
-        # sys.argv = ['testDownlinks.py', '-n', '1', '-b', '10.1.10.31', '-d', '00-80-00-00-00-01-78-96', '-t', 'VoBoXX', '-v', '2.01.00', '-s', '1', '-r', 'Downlinks', '-m', 'False'] #XX
-        sys.argv = ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', '00-80-00-00-00-02-25-32', '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'False'] #XP
-        testDownlinks.main()
+        print("Console file:", console_log_file)
+        with open(console_log_file, 'w') as file:
+            sys.argv = test_configs[test_num]
+            sys.stdout = file
+            test_result = testDownlinks.main()
         time.sleep(60)
     except KeyboardInterrupt:
-        serial_communication.log_running = False
+        # serial_communication.log_running = False
         print("Keyboard Inturupt")
+    except:
+        print("unexpected error")
     finally:
+        sys.stdout = sys.__stdout__
         serial_communication.log_running = False
-        print("Test Complete")
+        log_thread.join()
+    print("Test Complete")
+    # sys.path.append(os.path.abspath('C:\\repos\\jonathanSandbox\\LoRaNetHub'))
+    create_archive(test_result, test_start_time, log_results.get(), console_log_file)
+    print("Complete")

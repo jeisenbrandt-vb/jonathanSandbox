@@ -6,7 +6,7 @@ import os
 
 global log
 log_running = True
-log_directory = r"C:/Users/JonathanEisenbrandt/Desktop/Logs"
+log_directory = "C:\\Users\\JonathanEisenbrandt\\Desktop\\Logs"
 os.makedirs(log_directory, exist_ok=True)
 current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 log_filename = os.path.join(log_directory, f"serial_log_{current_time}.log")
@@ -55,7 +55,8 @@ def write_serial_data(port, baudrate, data):
         if ser.is_open:
             ser.close()
 
-def run_serial_log(port_num=None):
+def run_serial_log(return_queue, port_num=None):
+# def run_serial_log(port_num=None):
     if port_num is None:
         port_num = input("Enter port number: ")
     serial_port = f"COM{port_num}"
@@ -75,7 +76,8 @@ def run_serial_log(port_num=None):
         # if data.lower() == 'exit':
         #     break
         # write_serial_data(serial_port, baudrate, data)
-
+    read_thread.join()
+    return_queue.put(log_filename)
 
 if __name__ == "__main__":
     run_serial_log()
