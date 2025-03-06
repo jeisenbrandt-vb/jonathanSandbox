@@ -19,6 +19,7 @@
 *.txt
 *.log
 python_scripts/tmp/
+LoRaNetHub/DL_test_archives
 
 # C++ specific
 *.pro.user
@@ -28,7 +29,6 @@ python_scripts/tmp/
 *.rlib
 *.cargo/
 debug/
-
 logs/
 venv/
 

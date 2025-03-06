@@ -23,6 +23,7 @@ def vobo_configurator(config_num, port_num):
         config_root + "XP_1_00_00_DL_testing_base.csv",
         config_root + "XP_1_00_00_DL_testing_custom_1.csv", #fsb6, class A
         config_root + "XP_1_00_00_DL_testing_custom_2.csv", #fsb6
+        config_root + "XP_1_00_00_DL_testing_custom_3.csv", #fsb6, contMease True
     ]
     # py VoBoFileTransfer.py -d VoBo-To-PC -f VoBo-Config-File.csv -p COM9
     sys.argv = ['VoBoFileTransfer.py', '-d', 'PC-To-VoBo', '-f', config_paths[config_num], '-p', f'COM{port_num}']
@@ -86,8 +87,14 @@ if __name__ == "__main__":
     port_num = int(args.portNum)
     skip_config = args.skipConfig.lower() in ['true', '1', 't', 'y', 'yes']
     test_configs = [
-        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', '00-80-00-00-00-02-25-31', '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True'],
-        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.31', '-d', '00-80-00-00-00-01-78-96', '-t', 'VoBoXX', '-v', '2.01.00', '-s', '1', '-r', 'Downlinks', '-m', 'True'] #XX
+        #XP, class A
+        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', '00-80-00-00-00-02-25-31', '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'a', '-c', 'False'],
+        #class C, CM enabled
+        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', '00-80-00-00-00-02-25-31', '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'c', '-c', 'True'],
+        #class C, CM disabled
+        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', '00-80-00-00-00-02-25-31', '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'c', '-c', 'False'],
+        #XX
+        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.31', '-d', '00-80-00-00-00-01-78-96', '-t', 'VoBoXX', '-v', '2.01.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'a', '-c', 'False'] #XX
     ]
     try:
         if skip_config:
@@ -114,15 +121,12 @@ if __name__ == "__main__":
             test_result = testDownlinks.main()
         time.sleep(60)
     except KeyboardInterrupt:
-        # serial_communication.log_running = False
         print("Keyboard Inturupt")
-    except:
-        print("unexpected error")
+    except Exception as e:
+        print("unexpected error:", e)
     finally:
         sys.stdout = sys.__stdout__
         serial_communication.log_running = False
         log_thread.join()
-    print("Test Complete")
-    # sys.path.append(os.path.abspath('C:\\repos\\jonathanSandbox\\LoRaNetHub'))
+        print("Test Complete, Result:", test_result)
     create_archive(test_result, test_start_time, log_results.get(), console_log_file)
-    print("Complete")

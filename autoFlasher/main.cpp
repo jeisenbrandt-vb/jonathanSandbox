@@ -49,23 +49,25 @@ std::vector<std::string> getBin(std::string path, char analytics) {
   for (const auto & entry : fs::directory_iterator(path)) {
     //std::cout << entry.path() << std::endl;
     std::string file = entry.path().string();
+    std::cout << "file: " << file << std::endl;
     if(file.find("installer.bin") != std::string::npos){
       std::cout << "found installer\n" << file << std::endl;
       flag_installer = true;
       installerFile = file;
     }
     std::cout << path.back() <<std::endl;
-    std::string bin_str(1, path.back());
-    std::cout << bin_str << std::endl;
-    bin_str += ".bin";
     
-    if(analytics == 'y')
-      bin_str = "analytics.bin";
-    std::cout << "Looking for: " << bin_str << std::endl;
-    if(file.find(bin_str) != std::string::npos){
-      std::cout << "found bin\n" << file << std::endl;
-      flag_bin = true;
-      binFile = file;
+    if(analytics == 'y'){
+      std::cout << "WARN analytics not supported at the moment" <<std::endl;
+      std::regex bin_regex(R"(analytics\d+\.bin)");
+      // if(c)
+    } else {
+      std::regex bin_regex(R"(\d+\.bin)");
+      if(std::regex_search(file, bin_regex)) {
+        std::cout << "found bin\n" << file << std::endl;
+        flag_bin = true;
+        binFile = file;
+      }
     }
   }
   //std::cout << flag_installer << " " << flag_bin << std::endl;
@@ -103,9 +105,17 @@ int flashVoBo(std::vector<std::string> paths){
   }
   std::cout << "sleeping between flashes\n";
   std::this_thread::sleep_for(std::chrono::seconds(5));
-  if (paths[0].find("TC")) {
-    std::cout << "sleeping extra for TC tables\n";
+  int tc_idx = paths[0].find("TC");
+  int xp_idx = paths[0].find("XP");
+  if (tc_idx != -1) {
+    std::cout << tc_idx << std::endl;
+    std::cout << "Sleeping extra for TC tables" << std::endl;
     std::this_thread::sleep_for(std::chrono::seconds(25));
+  }
+  if (xp_idx != -1) {
+    std::cout << xp_idx << std::endl;
+    std::cout << "Sleeping extra for XP for some reason" << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(20));
   }
   std::cout << "resuming\n";
   try{
@@ -116,9 +126,10 @@ int flashVoBo(std::vector<std::string> paths){
     // Extract the source and target paths
     std::string source_path = paths[1];
     std::string target_directory = paths[2];
+    // std::cout << "Source: " << source_path << " Target: " << target_directory << std::endl;
 
     // Create the target directory if it doesn't exist
-    fs::create_directories(target_directory);
+    fs::create_directories(target_directory);//not sure that this should exist
 
     // Get the filename from the source path
     std::string filename = fs::path(source_path).filename().string();
@@ -186,7 +197,8 @@ int main () {
   std::vector<std::string> paths = getBin(firmwarePath, analytics);
   //flash vobo with installer then flash with desired binary
   paths.push_back(devboardPath);//devboard isn't always the same
-  std::cout << "devboard path" << devboardPath << std::endl;
+  std::cout << "devboard path: " << devboardPath << std::endl;
+  // std::cout << "paths 1 " << paths[1] << std::endl;
   int err = flashVoBo(paths);
   //print completed message
   return err;
