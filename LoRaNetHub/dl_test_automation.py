@@ -10,7 +10,6 @@ import sys
 import os
 import argparse
 sys.path.append(os.path.abspath('C:/repos/VoBoConfigTool'))
-import testDownlinks
 import VoBoFileTransferLib.VoBoFileTransfer
 from dotenv import load_dotenv
 
