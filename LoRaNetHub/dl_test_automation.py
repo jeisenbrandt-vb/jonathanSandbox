@@ -11,23 +11,38 @@ import os
 import argparse
 sys.path.append(os.path.abspath('C:/repos/VoBoConfigTool'))
 import testDownlinks
-import VoBoFileTransfer
+import VoBoFileTransferLib.VoBoFileTransfer
 from dotenv import load_dotenv
+
+config_root = "C:\\repos\\jonathanSandbox\\LoRaNetHub\\VoBoConfigs\\"
+deveuis = ['00-80-00-00-00-03-14-EB', '00-80-00-00-00-02-25-31', '00-80-00-00-00-01-78-96', '00-80-00-00-00-02-65-6F']
+config_paths = [
+    config_root + "XP_1_00_00_defaults.csv",
+    config_root + "XP_1_00_00_DL_testing_base.csv",
+    config_root + "XP_1_00_00_DL_testing_custom_1.csv", #fsb6, class A
+    config_root + "XP_1_00_00_DL_testing_custom_2.csv", #fsb6
+    config_root + "XP_1_00_00_DL_testing_custom_3.csv", #fsb6, contMease True
+]
+test_configs = [
+    # ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', deveuis[0], '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True'],
+    #XP, class A
+    ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', deveuis[0], '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'A', '-c', 'False'],
+    #class C, CM enabled
+    ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', deveuis[0], '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'C', '-c', 'True'],
+    #class C, CM disabled
+    ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', deveuis[0], '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'C', '-c', 'False'],
+    #XX
+    ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', deveuis[2], '-t', 'VoBoXX', '-v', '2.01.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'A', '-c', 'False'] #XX
+]
 
 def vobo_configurator(config_num, port_num):
     # Preconfiguration:
     # cycleTime: 60, cycleSubbands: disabled, FSB: <current gateway FSB>, modbusMultiSlaveAdminEnable: True, VoBoSyncAdminEnable: True,
-    config_root = "C:\\repos\\jonathanSandbox\\LoRaNetHub\\VoBoConfigs\\"
-    config_paths = [
-        config_root + "XP_1_00_00_defaults.csv",
-        config_root + "XP_1_00_00_DL_testing_base.csv",
-        config_root + "XP_1_00_00_DL_testing_custom_1.csv", #fsb6, class A
-        config_root + "XP_1_00_00_DL_testing_custom_2.csv", #fsb6
-        config_root + "XP_1_00_00_DL_testing_custom_3.csv", #fsb6, contMease True
-    ]
     # py VoBoFileTransfer.py -d VoBo-To-PC -f VoBo-Config-File.csv -p COM9
-    sys.argv = ['VoBoFileTransfer.py', '-d', 'PC-To-VoBo', '-f', config_paths[config_num], '-p', f'COM{port_num}']
-    VoBoFileTransfer.main()
+    #this might be the old way of doing things
+    # sys.argv = ['VoBoFileTransfer.py', '-d', 'PC-To-VoBo', '-f', config_paths[config_num], '-p', f'COM{port_num}']
+    # VoBoFileTransferLib.VoBoFileTransfer.main()
+    VoBoFileTransferLib.VoBoFileTransfer.voboFileTransfer('PC-To-VoBo', config_paths[config_num], f'COM{port_num}', 9600)
     exit_serial_menu(port_num)
 
 def exit_serial_menu(port_num):
@@ -86,23 +101,13 @@ if __name__ == "__main__":
     config_num = int(args.configNum)
     port_num = int(args.portNum)
     skip_config = args.skipConfig.lower() in ['true', '1', 't', 'y', 'yes']
-    test_configs = [
-        #XP, class A
-        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', '00-80-00-00-00-02-25-31', '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'a', '-c', 'False'],
-        #class C, CM enabled
-        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', '00-80-00-00-00-02-25-31', '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'c', '-c', 'True'],
-        #class C, CM disabled
-        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', '00-80-00-00-00-02-25-31', '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'c', '-c', 'False'],
-        #XX
-        ['testDownlinks.py', '-n', '1', '-b', '10.1.10.31', '-d', '00-80-00-00-00-01-78-96', '-t', 'VoBoXX', '-v', '2.01.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'a', '-c', 'False'] #XX
-    ]
     try:
         if skip_config:
             print("Skipping configuration step")
         else:
             vobo_configurator(config_num, port_num)
-    except:
-        print("error changing config")
+    except Exception as e:
+        print("error changing config: ", e)
     print("Starting main portion of test")
     log_results = queue.Queue()
     log_thread = threading.Thread(target=serial_communication.run_serial_log, args=(log_results, port_num,))
@@ -112,10 +117,10 @@ if __name__ == "__main__":
     console_log_file = f'C:\\repos\\jonathanSandbox\\LoRaNetHub\\consoleLogs\\consoleLogs{test_start_time}.txt'
     test_result = False
     try:
-        time.sleep(60)
+        time.sleep(30)
         # python testDownlinks.py -n 1 -b 10.1.10.31 -d 00-80-00-00-00-01-71-31 -t VoBoXX -v 2.00.00 -s 1 -r Downlinks -m False
         print("Console file:", console_log_file)
-        with open(console_log_file, 'w') as file:
+        with open(console_log_file, 'w', buffering=1) as file:
             sys.argv = test_configs[test_num]
             sys.stdout = file
             test_result = testDownlinks.main()

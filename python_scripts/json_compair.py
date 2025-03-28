@@ -64,6 +64,10 @@ sent_json = [
     sent_root + "config1_02-26-2025_16-18-51.json",
     sent_root + "config1_02-27-2025_15-53-31.json",
     sent_root + "config1_03-05-2025_15-18-53.json",
+    sent_root + "config1_03-24-2025_17-26-29.json",
+    sent_root + "config1_03-25-2025_09-48-49.json",
+
+
 ]
 received_json = [
     "C:\\Users\\JonathanEisenbrandt\\Downloads\\VoBoXP-downlinks-test\\VoBoXP-downlinks-test\\received_config_02-18-2025_10-05-21.json",
@@ -81,6 +85,8 @@ received_json = [
     received_root + "received_config_02-26-2025_22-33-52.json",
     received_root + "received_config_02-27-2025_22-08-32.json",
     received_root + "received_config_03-05-2025_23-18-55.json",
+    received_root + "received_config_03-25-2025_01-26-31.json",
+    received_root + "received_config_03-25-2025_17-48-50.json",
 ]
 with open(sent_json[file_num], "r") as file1:
     json_data1 = json.load(file1)

@@ -64,7 +64,8 @@ fn device_menu(){
         Ok(records) => {
             for record in records {
                 if let Some(first_element) = record.get(0) {
-                    dev_names.push(first_element.to_string());
+                    let dev_name = first_element.to_string() + " " + record.get(1).expect("deveui");
+                    dev_names.push(dev_name);
                 }
             }
         }
