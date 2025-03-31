@@ -12,6 +12,7 @@ import argparse
 sys.path.append(os.path.abspath('C:/repos/VoBoConfigTool'))
 import VoBoFileTransferLib.VoBoFileTransfer
 from dotenv import load_dotenv
+import testDownlinks
 
 config_root = "C:\\repos\\jonathanSandbox\\LoRaNetHub\\VoBoConfigs\\"
 deveuis = ['00-80-00-00-00-03-14-EB', '00-80-00-00-00-02-25-31', '00-80-00-00-00-01-78-96', '00-80-00-00-00-02-65-6F']
