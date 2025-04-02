@@ -13,6 +13,9 @@ sys.path.append(os.path.abspath('C:/repos/VoBoConfigTool'))
 import VoBoFileTransferLib.VoBoFileTransfer
 from dotenv import load_dotenv
 import testDownlinks
+from PyQt5.QtCore import pyqtSignal
+
+test_start_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 config_root = "C:\\repos\\jonathanSandbox\\LoRaNetHub\\VoBoConfigs\\"
 deveuis = ['00-80-00-00-00-03-14-EB', '00-80-00-00-00-02-25-31', '00-80-00-00-00-01-78-96', '00-80-00-00-00-02-65-6F']
@@ -41,16 +44,15 @@ test_configs = [
     ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', deveuis[2], '-t', 'VoBoXX', '-v', '2.01.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'A', '-c', 'False'] #XX
 ]
 
-test_config_base = ['testDownlinks.py', '-n', '1', '-b']
 
-def vobo_configurator(config_num, port_num):
+def vobo_configurator(config, port_num):
     # Preconfiguration:
     # cycleTime: 60, cycleSubbands: disabled, FSB: <current gateway FSB>, modbusMultiSlaveAdminEnable: True, VoBoSyncAdminEnable: True,
     # py VoBoFileTransfer.py -d VoBo-To-PC -f VoBo-Config-File.csv -p COM9
     #this might be the old way of doing things
     # sys.argv = ['VoBoFileTransfer.py', '-d', 'PC-To-VoBo', '-f', config_paths[config_num], '-p', f'COM{port_num}']
     # VoBoFileTransferLib.VoBoFileTransfer.main()
-    VoBoFileTransferLib.VoBoFileTransfer.voboFileTransfer('PC-To-VoBo', config_paths[config_num], f'COM{port_num}', 9600)
+    VoBoFileTransferLib.VoBoFileTransfer.voboFileTransfer('PC-To-VoBo', config_paths[config], f'COM{port_num}', 9600)
     exit_serial_menu(port_num)
 
 def exit_serial_menu(port_num):
@@ -94,26 +96,12 @@ def create_archive(test_result, test_start_time, serial_log_file, console_log_fi
     shutil.make_archive(current_archive_directory, 'zip', archive_directory + f"\\DL_test_{test_start_time}")
     shutil.rmtree(current_archive_directory)
 
-if __name__ == "__main__":
-    test_start_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    parser = argparse.ArgumentParser(description='DL tester automation')
-    
-    parser.add_argument('--testNum', required=True, type=str, help='Test sequence to execute')
-    parser.add_argument('--configNum', default='0', type=str, help='Config to flash to vobo')
-    parser.add_argument('--portNum', required=True, type=str, help='Serial port that vobo is connected to')
-    parser.add_argument('--skipConfig', default='false', type=str, help='Skip configuration step')
-
-    args = parser.parse_args()
-
-    test_num = int(args.testNum)
-    config_num = int(args.configNum)
-    port_num = int(args.portNum)
-    skip_config = args.skipConfig.lower() in ['true', '1', 't', 'y', 'yes']
+def run_test(config, gateway_ip, deveui, vobo_type, vobo_version, test_type, lorawan_class, cont_meas, port_num, skip_config = False):
     try:
-        if skip_config:
+        if skip_config == "true" or skip_config == "True":
             print("Skipping configuration step")
         else:
-            vobo_configurator(config_num, port_num)
+            vobo_configurator(config, port_num)
     except Exception as e:
         print("error changing config: ", e)
     print("Starting main portion of test")
@@ -129,9 +117,9 @@ if __name__ == "__main__":
         # python testDownlinks.py -n 1 -b 10.1.10.31 -d 00-80-00-00-00-01-71-31 -t VoBoXX -v 2.00.00 -s 1 -r Downlinks -m False
         print("Console file:", console_log_file)
         with open(console_log_file, 'w', buffering=1) as file:
-            sys.argv = test_configs[test_num]
+            # sys.argv = ['testDownlinks.py', '-n', '1', '-b', gateway_ip, '-d', deveui, '-t', vobo_type, '-v', vobo_version, '-s', '1', '-r', test_type, '-m', 'True', '-l', lorawan_class, '-c', cont_meas],
             sys.stdout = file
-            test_result = testDownlinks.main()
+            test_result = testDownlinks.main(vobo_type, vobo_version, test_type, ip_addresses[int(gateway_ip)], deveui, 1, 1, 'True', lorawan_class, cont_meas)
         time.sleep(60)
     except KeyboardInterrupt:
         print("Keyboard Inturupt")
@@ -143,3 +131,21 @@ if __name__ == "__main__":
         log_thread.join()
         print("Test Complete, Result:", test_result)
     create_archive(test_result, test_start_time, log_results.get(), console_log_file)
+    test_complete = pyqtSignal()
+    test_complete.emit()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='DL tester automation')
+    
+    parser.add_argument('--testNum', required=True, type=str, help='Test sequence to execute')
+    parser.add_argument('--configNum', default='0', type=str, help='Config to flash to vobo')
+    parser.add_argument('--portNum', required=True, type=str, help='Serial port that vobo is connected to')
+    parser.add_argument('--skipConfig', default='false', type=str, help='Skip configuration step')
+
+    args = parser.parse_args()
+
+    test_num = int(args.testNum)
+    config_num = int(args.configNum)
+    port_num = int(args.portNum)
+    skip_config = args.skipConfig.lower() in ['true', '1', 't', 'y', 'yes']
+    run_test()
