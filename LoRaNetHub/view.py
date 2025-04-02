@@ -1,46 +1,64 @@
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLineEdit, QPushButton, QLabel, QWidget
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLineEdit, QPushButton, QLabel, QWidget, QComboBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QIcon
+import dl_test_automation
 
 class MainWindow(QMainWindow):
+    #create a map where key is combo box name and val is array of items combo box
+    #i want to be able to reference the values later in a function call such as
+    #auto_dl(combo_boxes[config].current_text(), combo_boxes[].current_text(), combo_boxes[].current_text())
+    #this should envolve an list of lists of original inputs, then a map maping the box name to a reference 
+    #the box, I'll have to maintain the order which I'm not a super big fan of, but it should work
     def __init__(self):
         super().__init__()
+        combo_box_options = [
+            list(dl_test_automation.config_paths.keys()),
+            [str(i) for i in list(dl_test_automation.ip_addresses.keys())],
+            dl_test_automation.deveuis,
+            ["VoBoXX", "VoBoTC", "VoBoXP"],
+            ["1.00.00","2.00.00","2.01.00"],
+            ["Downlinks", "OutOfRange", "MinRange", "MaxRange"],
+            ["A", "C"],
+            ["True", "False"],
+        ]
+        self.combo_boxes = {
+            "config":           None,
+            "gateway_ip":       None,
+            "deveui":           None,
+            "vobo_type":        None,
+            "vobo_version":     None,
+            "test_type":        None,
+            "lorawan_class":    None,
+            "cont_meas":        None,
+        }
 
-        self.setWindowTitle("Modern Dark Mode PyQt App")
+        self.setWindowTitle("LoRa Net Hub")
         self.setGeometry(100, 100, 400, 250)
 
         # Set up the central widget and layout
         central_widget = QWidget(self)
         layout = QVBoxLayout(central_widget)
 
-        # Title Label
-        self.label = QLabel("Enter something:")
-        self.label.setObjectName("titleLabel")
+        i = 0
+        for key in self.combo_boxes:
+            label = QLabel(key)
+            combo_box = QComboBox()
+            combo_box.addItems(combo_box_options[i])
+            self.combo_boxes[key] = combo_box
+            layout.addWidget(label)
+            layout.addWidget(combo_box)
+            i += 1
+        
+        start_test_button = QPushButton("Start Test")
+        layout.addWidget(start_test_button)
 
-        # Input Field
-        self.input_field = QLineEdit()
-        self.input_field.setPlaceholderText("Type here...")
-        self.input_field.setObjectName("inputField")
-
-        # Button
-        self.button = QPushButton("Process")
-        self.button.setObjectName("actionButton")
-
-        # Output Label
-        self.output_label = QLabel("")
-        self.output_label.setObjectName("outputLabel")
-
-        # Add widgets to layout
-        layout.addWidget(self.label)
-        layout.addWidget(self.input_field)
-        layout.addWidget(self.button)
-        layout.addWidget(self.output_label)
-
-        # Set the central widget
         self.setCentralWidget(central_widget)
 
-        # Apply dark mode style
-        self.apply_dark_mode_styles()
+    # def on_combobox_changed(self):
+    #     selected_item = dl_test_automation.config_paths[self.config_selector.currentText()]
+    #     self.label.setText(f"Selected: {selected_item}")
+    def run_test(self):
+        pass
 
     def apply_dark_mode_styles(self):
         """ Apply dark mode styling to the app """

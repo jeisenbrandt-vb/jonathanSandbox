@@ -8,7 +8,7 @@ class Controller:
         self.model = model
 
         # Connect the button click to the controller method
-        self.view.button.clicked.connect(self.on_button_click)
+        # self.view.button.clicked.connect(self.on_button_click)
 
     def on_button_click(self):
         user_input = self.view.get_input_text()

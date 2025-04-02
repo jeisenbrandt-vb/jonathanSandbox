@@ -16,17 +16,23 @@ import testDownlinks
 
 config_root = "C:\\repos\\jonathanSandbox\\LoRaNetHub\\VoBoConfigs\\"
 deveuis = ['00-80-00-00-00-03-14-EB', '00-80-00-00-00-02-25-31', '00-80-00-00-00-01-78-96', '00-80-00-00-00-02-65-6F']
-config_paths = [
-    config_root + "XP_1_00_00_defaults.csv",
-    config_root + "XP_1_00_00_DL_testing_base.csv",
-    config_root + "XP_1_00_00_DL_testing_custom_1.csv", #fsb6, class A
-    config_root + "XP_1_00_00_DL_testing_custom_2.csv", #fsb6
-    config_root + "XP_1_00_00_DL_testing_custom_3.csv", #fsb6, contMease True
-]
+ip_addresses = {
+    5:  "10.1.10.17",
+    13: "10.1.10.31",
+}
+config_paths = {
+    "XP Default":       config_root + "XP_1_00_00_defaults.csv",
+    "XP Testing Base":  config_root + "XP_1_00_00_DL_testing_base.csv",
+    "XP FSB6 Class A":  config_root + "XP_1_00_00_DL_testing_custom_1.csv", #fsb6, class A
+    "XP FSB6":          config_root + "XP_1_00_00_DL_testing_custom_2.csv", #fsb6
+    "XP FSB6 ContMeas": config_root + "XP_1_00_00_DL_testing_custom_3.csv", #fsb6, contMease True
+}
 test_configs = [
     # ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', deveuis[0], '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True'],
     #XP, class A
     ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', deveuis[0], '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'A', '-c', 'False'],
+    #XP, class A, min range
+    ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', deveuis[0], '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'MinRange', '-m', 'True', '-l', 'A', '-c', 'False'],
     #class C, CM enabled
     ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', deveuis[0], '-t', 'VoBoXP', '-v', '1.00.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'C', '-c', 'True'],
     #class C, CM disabled
@@ -34,6 +40,8 @@ test_configs = [
     #XX
     ['testDownlinks.py', '-n', '1', '-b', '10.1.10.17', '-d', deveuis[2], '-t', 'VoBoXX', '-v', '2.01.00', '-s', '1', '-r', 'Downlinks', '-m', 'True', '-l', 'A', '-c', 'False'] #XX
 ]
+
+test_config_base = ['testDownlinks.py', '-n', '1', '-b']
 
 def vobo_configurator(config_num, port_num):
     # Preconfiguration:
