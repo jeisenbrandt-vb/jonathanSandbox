@@ -13,7 +13,6 @@ sys.path.append(os.path.abspath('C:/repos/VoBoConfigTool'))
 import VoBoFileTransferLib.VoBoFileTransfer
 from dotenv import load_dotenv
 import testDownlinks
-from PyQt5.QtCore import pyqtSignal
 
 test_start_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
@@ -131,8 +130,6 @@ def run_test(config, gateway_ip, deveui, vobo_type, vobo_version, test_type, lor
         log_thread.join()
         print("Test Complete, Result:", test_result)
     create_archive(test_result, test_start_time, log_results.get(), console_log_file)
-    test_complete = pyqtSignal()
-    test_complete.emit()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='DL tester automation')
